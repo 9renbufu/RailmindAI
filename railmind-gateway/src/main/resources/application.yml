@@ -1,0 +1,49 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: railmind-gateway
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  cloud:
+    gateway:
+      routes:
+        - id: railmind-user
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/auth/**,/api/user/**,/api/passenger/**
+        - id: railmind-train
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/station/**,/api/train/**,/api/schedule/**
+        - id: railmind-ticket
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/ticket/**,/api/seat/**,/api/waitlist/**,/api/inventory/**
+        - id: railmind-order
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/order/**
+        - id: railmind-payment
+          uri: http://localhost:8085
+          predicates:
+            - Path=/api/payment/**
+        - id: railmind-ai
+          uri: http://localhost:8087
+          predicates:
+            - Path=/api/ai/**
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+            maxAge: 3600
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG

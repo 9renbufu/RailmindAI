@@ -305,7 +305,9 @@ Agent 输出:
 |------|------|------|------|
 | 语言 | Java | 21 | 主力开发语言 |
 | 框架 | Spring Boot | 3.3.x | 基础框架 |
-| AI | Spring AI | 1.0.x | AI 能力集成 |
+| **AI 核心** | **Spring AI** | **1.0.0-M6** | **LLM 集成、Function Calling、RAG** |
+| **AI 模型** | **OpenAI GPT-4o** | - | **对话、推理、意图识别** |
+| **向量检索** | **Spring AI VectorStore** | - | **RAG 知识库检索** |
 | ORM | MyBatis Plus | 3.5.7 | 数据持久化 |
 | 缓存 | Redis | 7.x | 分布式缓存/锁 |
 | 分布式锁 | Redisson | 3.x | 座位锁定 |
@@ -314,9 +316,31 @@ Agent 输出:
 | 网关 | Spring Cloud Gateway | 4.x | API 网关 |
 | 限流 | Sentinel | 1.8.x | 流量控制 |
 | 本地缓存 | Caffeine | 3.x | L1 缓存 |
-| 向量库 | Simple / PGVector | - | RAG 向量存储 |
 | 前端 | Vue 3 + Vite | 3.x | 前端框架 |
 | 容器 | Docker / Compose | - | 容器化部署 |
+
+### Spring AI 核心能力
+
+```yaml
+spring:
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      base-url: ${OPENAI_BASE_URL}
+      chat:
+        options:
+          model: gpt-4o
+          temperature: 0.7
+```
+
+| 能力 | Spring AI 实现 | 应用场景 |
+|------|---------------|---------|
+| 对话 | `ChatClient` | 智能客服、多轮对话 |
+| Function Calling | `@Description` + `@Tool` | Agent 调用业务接口 |
+| RAG | `VectorStore` + `DocumentRetriever` | 政策文档检索 |
+| 流式输出 | `Flux<String>` (SSE) | 实时对话体验 |
+| 向量化 | `EmbeddingModel` | 知识库向量化 |
+| 记忆 | `ChatMemory` (Redis) | 多轮对话上下文 |
 
 ---
 

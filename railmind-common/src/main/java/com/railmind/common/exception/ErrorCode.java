@@ -30,6 +30,11 @@ public enum ErrorCode {
     PASSENGER_LIMIT(1012, "乘车人数量已达上限(最多15人)"),
     PASSENGER_ALREADY_EXISTS(1013, "该乘车人已存在"),
     ID_CARD_INVALID(1014, "身份证号格式不正确"),
+    USER_PHONE_EXISTS(1015, "手机号已被注册"),
+    USER_USERNAME_EXISTS(1016, "用户名已存在"),
+    USER_PASSWORD_ERROR(1017, "密码错误"),
+    PASSENGER_NOT_FOUND(1018, "乘车人不存在"),
+    PASSENGER_LIMIT_EXCEEDED(1019, "乘车人数量已达上限(最多15人)"),
 
     // 车次模块 2xxx
     TRAIN_NOT_FOUND(2001, "车次不存在"),

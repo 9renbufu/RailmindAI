@@ -85,6 +85,6 @@ class StationServiceTest {
 
         assertNotNull(results);
         assertEquals(1, results.size());
-        assertEquals("北京南", results.get(0).getName());
+        assertEquals("北京南站", results.get(0).getName());
     }
 }

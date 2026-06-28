@@ -52,6 +52,15 @@ public enum ErrorCode {
     WAITLIST_ALREADY_EXISTS(3006, "已加入候补队列"),
     WAITLIST_NOT_FOUND(3007, "候补记录不存在"),
     WAITLIST_EXPIRED(3008, "候补已过期"),
+    SEAT_LOCKED(3009, "座位已被锁定"),
+    NO_AVAILABLE_SEAT(3010, "没有可用座位"),
+    LOCK_NOT_FOUND(3011, "座位锁不存在"),
+    ALREADY_IN_WAITLIST(3012, "您已在候补队列中"),
+    WAITLIST_ALREADY_PROCESSED(3013, "候补已处理"),
+
+    // 通用 9xxx
+    SYSTEM_ERROR(9999, "系统错误"),
+    PERMISSION_DENIED(9998, "无权操作"),
 
     // 订单模块 4xxx
     ORDER_NOT_FOUND(4001, "订单不存在"),

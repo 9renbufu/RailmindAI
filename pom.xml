@@ -58,6 +58,11 @@
                 <artifactId>railmind-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.railmind</groupId>
+                <artifactId>railmind-train</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- MyBatis Plus -->
             <dependency>

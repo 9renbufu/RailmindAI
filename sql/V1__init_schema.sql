@@ -400,6 +400,27 @@ CREATE TABLE t_audit_log (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='操作审计日志表';
 
 -- ============================================================
+-- 20. 本地消息表 t_outbox (Kafka可靠投递)
+-- ============================================================
+DROP TABLE IF EXISTS t_outbox;
+CREATE TABLE t_outbox (
+    id              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
+    aggregate_type  VARCHAR(50)  NOT NULL COMMENT '聚合根类型(ORDER/TICKET等)',
+    aggregate_id    VARCHAR(50)  NOT NULL COMMENT '聚合根ID(如orderNo)',
+    event_type      VARCHAR(100) NOT NULL COMMENT '事件类型(OrderCreatedEvent等)',
+    payload         TEXT         NOT NULL COMMENT '事件内容(JSON)',
+    status          VARCHAR(20)  NOT NULL DEFAULT 'PENDING' COMMENT '状态: PENDING/SENT/FAILED',
+    retry_count     INT          NOT NULL DEFAULT 0 COMMENT '已重试次数',
+    next_retry_at   DATETIME     COMMENT '下次重试时间',
+    error_message   VARCHAR(500) COMMENT '错误信息',
+    created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_status (status),
+    INDEX idx_aggregate (aggregate_type, aggregate_id),
+    INDEX idx_next_retry (status, next_retry_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='本地消息表(可靠投递)';
+
+-- ============================================================
 -- 完成
 -- ============================================================
-SELECT 'RailMind AI 数据库初始化完成，共 18 张表' AS result;
+SELECT 'RailMind AI 数据库初始化完成，共 19 张表' AS result;

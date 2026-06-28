@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.railmind.order.mapper.OrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.railmind.order.domain.model.Order">
+        <id column="id" property="id"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="user_id" property="userId"/>
+        <result column="train_id" property="trainId"/>
+        <result column="train_no" property="trainNo"/>
+        <result column="travel_date" property="travelDate"/>
+        <result column="from_station" property="fromStation"/>
+        <result column="from_station_name" property="fromStationName"/>
+        <result column="to_station" property="toStation"/>
+        <result column="to_station_name" property="toStationName"/>
+        <result column="departure_time" property="departureTime"/>
+        <result column="arrival_time" property="arrivalTime"/>
+        <result column="total_amount" property="totalAmount"/>
+        <result column="status" property="status"/>
+        <result column="pay_deadline" property="payDeadline"/>
+        <result column="paid_at" property="paidAt"/>
+        <result column="cancelled_at" property="cancelledAt"/>
+        <result column="cancel_reason" property="cancelReason"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="deleted" property="deleted"/>
+    </resultMap>
+
+</mapper>

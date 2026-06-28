@@ -27,6 +27,7 @@ CREATE TABLE t_user (
     email           VARCHAR(100) COMMENT '邮箱',
     avatar          VARCHAR(500) COMMENT '头像URL',
     status          TINYINT      NOT NULL DEFAULT 1 COMMENT '状态: 0-禁用 1-正常',
+    user_level      TINYINT      NOT NULL DEFAULT 1 COMMENT '用户等级: 1-普通 2-银卡 3-金卡 4-钻石',
     last_login_time DATETIME     COMMENT '最后登录时间',
     last_login_ip   VARCHAR(45)  COMMENT '最后登录IP',
     created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,

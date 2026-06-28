@@ -2,12 +2,13 @@ package com.railmind.user.service;
 
 import com.railmind.common.exception.BizException;
 import com.railmind.user.domain.model.User;
-import com.railmind.user.domain.repository.UserRepository;
 import com.railmind.user.domain.service.UserDomainService;
 import com.railmind.user.dto.LoginRequest;
 import com.railmind.user.dto.RegisterRequest;
 import com.railmind.user.dto.TokenResponse;
 import com.railmind.user.dto.UserDTO;
+import com.railmind.user.mapper.UserMapper;
+import com.railmind.user.service.impl.AuthServiceImpl;
 import com.railmind.user.util.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,6 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 class AuthServiceTest {
 
     @Mock
-    private UserRepository userRepository;
+    private UserMapper userMapper;
     @Mock
     private UserDomainService userDomainService;
     @Mock
@@ -44,7 +44,7 @@ class AuthServiceTest {
     private ValueOperations<String, String> valueOperations;
 
     @InjectMocks
-    private AuthService authService;
+    private AuthServiceImpl authService;
 
     private User testUser;
 
@@ -71,17 +71,13 @@ class AuthServiceTest {
         request.setRealName("新用户");
 
         when(passwordEncoder.encode("123456")).thenReturn("$2a$10$encoded");
-        when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
-            User u = invocation.getArgument(0);
-            u.setId(2L);
-            return u;
-        });
+        when(userMapper.insert(any(User.class))).thenReturn(1);
 
         UserDTO result = authService.register(request);
 
         assertNotNull(result);
         assertEquals("newuser", result.getUsername());
-        verify(userRepository).save(any(User.class));
+        verify(userMapper).insert(any(User.class));
     }
 
     @Test

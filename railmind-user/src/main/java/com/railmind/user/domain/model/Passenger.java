@@ -1,6 +1,6 @@
 package com.railmind.user.domain.model;
 
-import jakarta.persistence.*;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -12,55 +12,38 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "t_passenger")
+@TableName("t_passenger")
 public class Passenger {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @Column(name = "user_id", nullable = false)
+    @TableField("user_id")
     private Long userId;
 
-    @Column(nullable = false, length = 50)
     private String name;
 
-    @Column(name = "id_card", nullable = false)
+    @TableField("id_card")
     private String idCard;
 
-    @Column(name = "id_card_hash", nullable = false, length = 64)
+    @TableField("id_card_hash")
     private String idCardHash;
 
-    @Column(length = 20)
     private String phone;
 
-    @Column(nullable = false)
     @Builder.Default
     private Integer type = 1;
 
-    @Column(nullable = false)
     @Builder.Default
     private Integer status = 1;
 
-    @Column(name = "created_at", updatable = false)
+    @TableField(value = "created_at", fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @TableField(value = "updated_at", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updatedAt;
 
-    @Column(nullable = false)
+    @TableLogic
     @Builder.Default
     private Integer deleted = 0;
-
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
 }

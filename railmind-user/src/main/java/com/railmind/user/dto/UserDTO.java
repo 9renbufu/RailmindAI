@@ -21,6 +21,7 @@ public class UserDTO {
     private String email;
     private String avatar;
     private Integer status;
+    private Integer userLevel;
     private LocalDateTime lastLoginTime;
     private LocalDateTime createdAt;
 }

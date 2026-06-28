@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -41,6 +42,19 @@ public class AuthController {
     public Result<TokenResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
         TokenResponse token = authService.refreshToken(request.getRefreshToken());
         return Result.ok(token);
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "用户登出", description = "清除Token，注销登录")
+    public Result<Void> logout(Authentication authentication,
+                               HttpServletRequest httpRequest) {
+        Long userId = (Long) authentication.getPrincipal();
+        String accessToken = httpRequest.getHeader("Authorization");
+        if (accessToken != null && accessToken.startsWith("Bearer ")) {
+            accessToken = accessToken.substring(7);
+        }
+        authService.logout(userId, accessToken);
+        return Result.ok();
     }
 
     private String getClientIp(HttpServletRequest request) {

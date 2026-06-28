@@ -1,6 +1,6 @@
 package com.railmind.user.domain.model;
 
-import jakarta.persistence.*;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -12,66 +12,51 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "t_user")
+@TableName("t_user")
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 50)
     private String username;
 
-    @Column(nullable = false)
     private String password;
 
-    @Column(name = "real_name", length = 50)
+    @TableField("real_name")
     private String realName;
 
-    @Column(name = "id_card")
+    @TableField("id_card")
     private String idCard;
 
-    @Column(name = "id_card_hash", length = 64)
+    @TableField("id_card_hash")
     private String idCardHash;
 
-    @Column(nullable = false, unique = true, length = 20)
     private String phone;
 
-    @Column(length = 100)
     private String email;
 
-    @Column(length = 500)
     private String avatar;
 
-    @Column(nullable = false)
     @Builder.Default
     private Integer status = 1;
 
-    @Column(name = "last_login_time")
+    @TableField("user_level")
+    @Builder.Default
+    private Integer userLevel = 1;
+
+    @TableField("last_login_time")
     private LocalDateTime lastLoginTime;
 
-    @Column(name = "last_login_ip", length = 45)
+    @TableField("last_login_ip")
     private String lastLoginIp;
 
-    @Column(name = "created_at", updatable = false)
+    @TableField(value = "created_at", fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @TableField(value = "updated_at", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updatedAt;
 
-    @Column(nullable = false)
+    @TableLogic
     @Builder.Default
     private Integer deleted = 0;
-
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
 }

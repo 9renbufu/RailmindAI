@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -23,9 +24,11 @@ import java.util.Collections;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final StringRedisTemplate redisTemplate;
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
+    private static final String ACCESS_TOKEN_BLACKLIST_PREFIX = "user:token:blacklist:";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -34,6 +37,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String token = extractToken(request);
 
         if (StringUtils.hasText(token) && jwtUtil.isTokenValid(token) && jwtUtil.isAccessToken(token)) {
+            // Check if token is blacklisted (logged out)
+            if (isTokenBlacklisted(token)) {
+                log.debug("Token is blacklisted, skipping authentication");
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             Long userId = jwtUtil.getUserId(token);
             String username = jwtUtil.getUsername(token);
 
@@ -47,6 +57,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isTokenBlacklisted(String token) {
+        try {
+            return Boolean.TRUE.equals(redisTemplate.hasKey(ACCESS_TOKEN_BLACKLIST_PREFIX + token));
+        } catch (Exception e) {
+            log.warn("Failed to check token blacklist: {}", e.getMessage());
+            return false;
+        }
     }
 
     private String extractToken(HttpServletRequest request) {

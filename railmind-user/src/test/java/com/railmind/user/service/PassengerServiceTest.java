@@ -3,9 +3,10 @@ package com.railmind.user.service;
 import com.railmind.common.exception.BizException;
 import com.railmind.common.util.CryptoUtil;
 import com.railmind.user.domain.model.Passenger;
-import com.railmind.user.domain.repository.PassengerRepository;
 import com.railmind.user.dto.AddPassengerRequest;
 import com.railmind.user.dto.PassengerDTO;
+import com.railmind.user.mapper.PassengerMapper;
+import com.railmind.user.service.impl.PassengerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -25,10 +25,10 @@ import static org.mockito.Mockito.*;
 class PassengerServiceTest {
 
     @Mock
-    private PassengerRepository passengerRepository;
+    private PassengerMapper passengerMapper;
 
     @InjectMocks
-    private PassengerService passengerService;
+    private PassengerServiceImpl passengerService;
 
     private Passenger testPassenger;
 
@@ -50,7 +50,7 @@ class PassengerServiceTest {
 
     @Test
     void listPassengers_shouldReturnList() {
-        when(passengerRepository.findByUserIdAndDeleted(1L, 0))
+        when(passengerMapper.selectByUserIdAndDeleted(1L, 0))
                 .thenReturn(List.of(testPassenger));
 
         List<PassengerDTO> result = passengerService.listPassengers(1L);
@@ -67,18 +67,14 @@ class PassengerServiceTest {
         request.setPhone("13800002222");
         request.setType(1);
 
-        when(passengerRepository.countByUserIdAndDeleted(1L, 0)).thenReturn(0L);
-        when(passengerRepository.save(any(Passenger.class))).thenAnswer(invocation -> {
-            Passenger p = invocation.getArgument(0);
-            p.setId(2L);
-            return p;
-        });
+        when(passengerMapper.countByUserIdAndDeleted(1L, 0)).thenReturn(0);
+        when(passengerMapper.insert(any(Passenger.class))).thenReturn(1);
 
         PassengerDTO result = passengerService.addPassenger(1L, request);
 
         assertNotNull(result);
         assertEquals("李四", result.getName());
-        verify(passengerRepository).save(any(Passenger.class));
+        verify(passengerMapper).insert(any(Passenger.class));
     }
 
     @Test
@@ -87,26 +83,26 @@ class PassengerServiceTest {
         request.setName("李四");
         request.setIdCard("110101199901011234");
 
-        when(passengerRepository.countByUserIdAndDeleted(1L, 0)).thenReturn(15L);
+        when(passengerMapper.countByUserIdAndDeleted(1L, 0)).thenReturn(15);
 
         assertThrows(BizException.class, () -> passengerService.addPassenger(1L, request));
     }
 
     @Test
     void deletePassenger_shouldSucceed() {
-        when(passengerRepository.findByIdAndUserIdAndDeleted(1L, 1L, 0))
-                .thenReturn(Optional.of(testPassenger));
+        when(passengerMapper.selectByIdAndUserIdAndDeleted(1L, 1L, 0))
+                .thenReturn(testPassenger);
+        when(passengerMapper.deleteById(1L)).thenReturn(1);
 
         passengerService.deletePassenger(1L, 1L);
 
-        assertEquals(1, testPassenger.getDeleted());
-        verify(passengerRepository).save(testPassenger);
+        verify(passengerMapper).deleteById(1L);
     }
 
     @Test
     void deletePassenger_shouldFailWhenNotFound() {
-        when(passengerRepository.findByIdAndUserIdAndDeleted(99L, 1L, 0))
-                .thenReturn(Optional.empty());
+        when(passengerMapper.selectByIdAndUserIdAndDeleted(99L, 1L, 0))
+                .thenReturn(null);
 
         assertThrows(BizException.class, () -> passengerService.deletePassenger(1L, 99L));
     }

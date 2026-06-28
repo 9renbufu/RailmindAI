@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.railmind.user.mapper.PassengerMapper">
+
+    <select id="selectByUserIdAndDeleted" resultType="com.railmind.user.domain.model.Passenger">
+        SELECT * FROM t_passenger WHERE user_id = #{userId} AND deleted = #{deleted}
+    </select>
+
+    <select id="selectByIdAndUserIdAndDeleted" resultType="com.railmind.user.domain.model.Passenger">
+        SELECT * FROM t_passenger WHERE id = #{id} AND user_id = #{userId} AND deleted = #{deleted}
+    </select>
+
+    <select id="countByUserIdAndDeleted" resultType="int">
+        SELECT COUNT(*) FROM t_passenger WHERE user_id = #{userId} AND deleted = #{deleted}
+    </select>
+
+</mapper>
